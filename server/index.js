@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import buildingRoutes from './routes/building.routes.js';
 import roomTypeRoutes from './routes/roomType.routes.js';
+import roomRoutes from './routes/room.routes.js';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/buildings', buildingRoutes);
 app.use('/api/room-types', roomTypeRoutes);
+app.use('/api/rooms', roomRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

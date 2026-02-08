@@ -26,9 +26,11 @@ model Building {
   id          Int      @id @default(autoincrement())
   name        String
   address     String
-  description String?  
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  rooms       Room[]
 }
 
 model RoomType {
@@ -37,6 +39,26 @@ model RoomType {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  rooms       Room[]
+}
+
+model Room {
+  id                Int       @id @default(autoincrement())
+  name              String
+  capacity          Int
+
+  roomTypeId        Int
+  roomType          RoomType  @relation(fields: [roomTypeId], references: [id], onDelete: Restrict)
+
+  buildingId        Int
+  building          Building  @relation(fields: [buildingId], references: [id], onDelete: Restrict)
+
+  workingHoursStart DateTime
+  workingHoursEnd   DateTime
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 
