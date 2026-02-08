@@ -198,12 +198,6 @@ export async function updateReservationTime(req, res) {
         .json({ message: 'startTime and endTime are required.' });
     }
 
-    if (!isSameUtcDay(start, end)) {
-      return res.status(400).json({
-        message: 'startTime and endTime must be on the same day.',
-      });
-    }
-
     if (!isValidIsoDateTime(startTime) || !isValidIsoDateTime(endTime)) {
       return res.status(400).json({
         message: 'startTime and endTime must be valid ISO datetime strings.',
@@ -217,6 +211,12 @@ export async function updateReservationTime(req, res) {
       return res
         .status(400)
         .json({ message: 'startTime must be before endTime.' });
+    }
+
+    if (!isSameUtcDay(start, end)) {
+      return res.status(400).json({
+        message: 'startTime and endTime must be on the same day.',
+      });
     }
 
     const existing = await prisma.reservation.findUnique({

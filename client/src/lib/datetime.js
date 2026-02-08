@@ -17,17 +17,3 @@ export function addMinutesUtc(date, minutes) {
 export function overlaps(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && aEnd > bStart;
 }
-
-export function formatDateTimeUTC(iso) {
-  const d = new Date(iso);
-  return d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
-}
-
-export function formatTime(d) {
-  try {
-    const date = new Date(d);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  } catch {
-    return '';
-  }
-}
