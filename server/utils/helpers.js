@@ -80,4 +80,4 @@ export function isSameUtcDay(start, end) {
     start.getUTCMonth() === end.getUTCMonth() &&
     start.getUTCDate() === end.getUTCDate()
   );
-}
+};

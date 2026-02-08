@@ -20,6 +20,8 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  reservations Reservation[]
 }
 
 model Building {
@@ -59,6 +61,20 @@ model Room {
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+
+  reservations Reservation[]
 }
 
+model Reservation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  startTime DateTime
+  endTime   DateTime
 
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
