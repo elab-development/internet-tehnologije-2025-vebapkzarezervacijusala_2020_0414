@@ -61,6 +61,40 @@ export async function getReservationsByRoomAndDate(req, res) {
 }
 
 /**
+ * @route   GET /api/reservations/my-upcoming
+ * @access  Private (any authenticated user)
+ * @desc    Returns upcoming reservations for the logged-in user (endTime > now).
+ * @query   None
+ * @returns 200 { reservations: Reservation[] }
+ *          500 { message }
+ */
+export async function getMyUpcomingReservations(req, res) {
+  try {
+    const now = new Date();
+
+    const reservations = await prisma.reservation.findMany({
+      where: {
+        userId: req.user.id,
+        endTime: { gt: now },
+      },
+      include: {
+        room: {
+          include: {
+            building: true,
+            roomType: true,
+          },
+        },
+      },
+      orderBy: { startTime: 'asc' },
+    });
+
+    return res.json({ reservations });
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error.' });
+  }
+}
+
+/**
  * @route   POST /api/reservations
  * @access  Private (USER only)
  * @desc    Creates a reservation for the logged-in user.
