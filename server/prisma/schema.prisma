@@ -22,6 +22,8 @@ model User {
   updatedAt    DateTime @updatedAt
 
   reservations Reservation[]
+
+  @@index([role])
 }
 
 model Building {
@@ -62,7 +64,10 @@ model Room {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  reservations Reservation[]
+  reservations      Reservation[]
+
+  @@index([buildingId])
+  @@index([roomTypeId])
 }
 
 model Reservation {
@@ -77,4 +82,8 @@ model Reservation {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([roomId, startTime])
+  @@index([roomId, endTime])
+  @@index([userId])
 }
