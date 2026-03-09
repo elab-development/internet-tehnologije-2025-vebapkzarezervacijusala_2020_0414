@@ -16,14 +16,3 @@ CREATE UNIQUE INDEX `Room_buildingId_name_key` ON `Room`(`buildingId`, `name`);
 -- CreateIndex
 CREATE INDEX `User_role_idx` ON `User`(`role`);
 
--- RedefineIndex
-CREATE INDEX `Reservation_userId_idx` ON `Reservation`(`userId`);
-DROP INDEX `Reservation_userId_fkey` ON `reservation`;
-
--- RedefineIndex
-CREATE INDEX `Room_buildingId_idx` ON `Room`(`buildingId`);
-DROP INDEX `Room_buildingId_fkey` ON `room`;
-
--- RedefineIndex
-CREATE INDEX `Room_roomTypeId_idx` ON `Room`(`roomTypeId`);
-DROP INDEX `Room_roomTypeId_fkey` ON `room`;
