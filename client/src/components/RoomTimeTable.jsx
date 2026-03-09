@@ -1,4 +1,6 @@
 import { addMinutesUtc, overlaps, formatHHMMUtc } from '../lib/datetime';
+import { useHolidays } from '../hooks/useHolidays';
+import { CalendarX2 } from 'lucide-react';
 
 export default function RoomTimeTable({
   date,
@@ -8,6 +10,8 @@ export default function RoomTimeTable({
   onClickFreeSlot,
   onClickOwnReservation,
 }) {
+  const { isHoliday, holiday } = useHolidays(date, 'RS');
+
   const workStartHHMM = formatHHMMUtc(room.workingHoursStart);
   const workEndHHMM = formatHHMMUtc(room.workingHoursEnd);
 
@@ -42,17 +46,35 @@ export default function RoomTimeTable({
           </p>
         </div>
 
-        <div className='flex items-center gap-2 text-xs'>
+        <div className='flex items-center gap-3 text-xs'>
           <span className='inline-flex items-center gap-2'>
-            <span className='h-3 w-3 rounded bg-gray-100 border' />
+            <span className='h-3 w-3 rounded border bg-gray-100' />
             Free
           </span>
           <span className='inline-flex items-center gap-2'>
-            <span className='h-3 w-3 rounded bg-red-200 border border-red-300' />
+            <span className='h-3 w-3 rounded border border-red-300 bg-red-200' />
             Busy
+          </span>
+          <span className='inline-flex items-center gap-2'>
+            <span className='h-3 w-3 rounded border border-yellow-300 bg-yellow-200' />
+            Holiday
           </span>
         </div>
       </div>
+
+      {isHoliday && (
+        <div className='mb-4 flex items-start gap-2 rounded-xl border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-900'>
+          <CalendarX2 className='mt-0.5 h-4 w-4' />
+          <div>
+            <p className='font-medium'>
+              Public holiday — reservations disabled.
+            </p>
+            <p className='text-xs text-yellow-800'>
+              {holiday?.localName || holiday?.name || 'Holiday'}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className='grid gap-2 sm:grid-cols-2 lg:grid-cols-3'>
         {slots.map((slot, idx) => {
@@ -65,11 +87,17 @@ export default function RoomTimeTable({
 
           const base =
             'rounded-xl border px-3 py-2 text-sm flex items-center justify-between transition';
+
+          const holidayCls =
+            'bg-yellow-50 border-yellow-200 text-yellow-900 cursor-not-allowed';
+
           const freeCls = 'bg-white hover:bg-gray-50 cursor-pointer';
           const busyOtherCls =
             'bg-red-200 border-red-200 text-red-800 cursor-not-allowed';
           const busyMineCls =
             'bg-red-50 border-red-200 text-red-800 cursor-pointer hover:bg-red-100';
+
+          const disabled = isHoliday || (isBusy && !isMine);
 
           return (
             <button
@@ -77,27 +105,43 @@ export default function RoomTimeTable({
               type='button'
               className={[
                 base,
-                !isBusy ? freeCls : isMine ? busyMineCls : busyOtherCls,
+                isHoliday
+                  ? holidayCls
+                  : !isBusy
+                    ? freeCls
+                    : isMine
+                      ? busyMineCls
+                      : busyOtherCls,
               ].join(' ')}
-              disabled={isBusy && !isMine}
+              disabled={disabled}
               onClick={() => {
+                if (isHoliday) return;
+
                 if (!isBusy)
                   onClickFreeSlot({ startHHMM: hhmm, endHHMM: hhmmEnd });
                 else if (isMine) onClickOwnReservation(r);
               }}
               title={
-                isBusy
-                  ? isMine
-                    ? 'Your reservation (click to edit)'
-                    : 'Reserved'
-                  : 'Click to reserve'
+                isHoliday
+                  ? 'Public holiday — reservations disabled'
+                  : isBusy
+                    ? isMine
+                      ? 'Your reservation (click to edit)'
+                      : 'Reserved'
+                    : 'Click to reserve'
               }
             >
               <span className='font-medium text-gray-900'>
                 {hhmm} – {hhmmEnd}
               </span>
               <span className='text-xs text-gray-500'>
-                {isBusy ? (isMine ? 'Yours' : 'Busy') : 'Free'}
+                {isHoliday
+                  ? 'Holiday'
+                  : isBusy
+                    ? isMine
+                      ? 'Yours'
+                      : 'Busy'
+                    : 'Free'}
               </span>
             </button>
           );

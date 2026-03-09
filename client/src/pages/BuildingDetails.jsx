@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Building2, MapPin } from 'lucide-react';
 
 import { useBuildingStore } from '../stores/buildingStore';
 import { useRoomStore } from '../stores/roomStore';
+import { geocodeAddress } from '../api/geocode';
 import RoomCard from '../components/RoomCard';
 
 export default function BuildingDetails() {
@@ -19,6 +20,14 @@ export default function BuildingDetails() {
   const roomsLoading = useRoomStore((s) => s.isLoading);
   const roomsError = useRoomStore((s) => s.error);
   const fetchRooms = useRoomStore((s) => s.fetchRooms);
+
+  const [coords, setCoords] = useState(null);
+
+  useEffect(() => {
+    if (!building?.address) return;
+
+    geocodeAddress(building.address).then(setCoords);
+  }, [building]);
 
   useEffect(() => {
     if (!Number.isInteger(idNum)) return;
@@ -55,6 +64,20 @@ export default function BuildingDetails() {
               <div className='mt-2 flex items-center gap-2 text-sm text-gray-600'>
                 <MapPin className='h-4 w-4 text-gray-400' />
                 {building.address}
+              </div>
+            )}
+
+            {coords && (
+              <div className='mt-4'>
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lon}`}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='text-blue-600 underline'
+                >
+                  <MapPin className='h-4 w-4 inline-block' />
+                  View on map
+                </a>
               </div>
             )}
 

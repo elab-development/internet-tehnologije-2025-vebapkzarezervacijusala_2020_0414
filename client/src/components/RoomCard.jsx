@@ -1,8 +1,18 @@
 import { Link } from 'react-router-dom';
-import { DoorOpen, Users, Clock, ArrowRight, Tag } from 'lucide-react';
+import {
+  DoorOpen,
+  Users,
+  Clock,
+  ArrowRight,
+  Tag,
+  CalendarX2,
+} from 'lucide-react';
 import { formatTime } from '../lib/datetime';
+import { useHolidays } from '../hooks/useHolidays';
 
-export default function RoomCard({ room }) {
+export default function RoomCard({ room, date }) {
+  const { isHoliday, holiday } = useHolidays(date, 'RS');
+
   return (
     <Link
       to={`/room/${room.id}`}
@@ -15,11 +25,30 @@ export default function RoomCard({ room }) {
           </div>
 
           <div>
-            <h3 className='text-lg font-semibold text-gray-900'>{room.name}</h3>
+            <div className='flex items-center gap-2'>
+              <h3 className='text-lg font-semibold text-gray-900'>
+                {room.name}
+              </h3>
+
+              {isHoliday && (
+                <span className='inline-flex items-center gap-1 rounded-full border border-yellow-300 bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-900'>
+                  <CalendarX2 className='h-3.5 w-3.5' />
+                  Holiday
+                </span>
+              )}
+            </div>
+
             <div className='mt-1 flex items-center gap-2 text-sm text-gray-500'>
               <Tag className='h-4 w-4' />
               {room.roomType?.name || 'Room'}
             </div>
+
+            {isHoliday && (
+              <p className='mt-1 text-xs text-yellow-800'>
+                {holiday?.localName || holiday?.name || 'Public holiday'} — no
+                reservations
+              </p>
+            )}
           </div>
         </div>
 
