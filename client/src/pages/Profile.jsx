@@ -5,6 +5,7 @@ import { CalendarClock, Mail, User2, Shield, DoorOpen } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useReservationStore } from '../stores/reservationStore';
 import { formatDateTimeUTC } from '../lib/datetime';
+import AdminDashboard from '../components/AdminDashboard';
 
 export default function Profile() {
   const user = useAuthStore((s) => s.user);
@@ -24,6 +25,10 @@ export default function Profile() {
   }, [myUpcoming]);
 
   if (!user) return null;
+
+  if (user.role === 'ADMIN') {
+    return <AdminDashboard />;
+  }
 
   return (
     <div className='space-y-8'>

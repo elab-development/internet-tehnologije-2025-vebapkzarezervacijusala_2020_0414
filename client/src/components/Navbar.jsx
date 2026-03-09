@@ -75,7 +75,7 @@ export default function Navbar() {
 
               <div className='ml-2 flex items-center gap-2 rounded-xl border bg-white px-3 py-2'>
                 <div className='leading-tight'>
-                  <p className='max-w-[160px] truncate text-sm font-medium text-gray-900'>
+                  <p className='max-w-40 truncate text-sm font-medium text-gray-900'>
                     {user.fullName}
                   </p>
                   <p className='text-xs text-gray-500'>{user.role}</p>
