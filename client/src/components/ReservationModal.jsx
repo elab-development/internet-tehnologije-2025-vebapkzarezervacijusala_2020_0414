@@ -85,10 +85,14 @@ export default function ReservationModal({
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='grid grid-cols-2 gap-3'>
             <div>
-              <label className='mb-1 block text-sm font-medium text-gray-700'>
+              <label
+                htmlFor='reservation-start'
+                className='mb-1 block text-sm font-medium text-gray-700'
+              >
                 Start
               </label>
               <input
+                id='reservation-start'
                 type='time'
                 value={startHHMM}
                 onChange={(e) => setStartHHMM(e.target.value)}
@@ -97,10 +101,14 @@ export default function ReservationModal({
             </div>
 
             <div>
-              <label className='mb-1 block text-sm font-medium text-gray-700'>
+              <label
+                htmlFor='reservation-end'
+                className='mb-1 block text-sm font-medium text-gray-700'
+              >
                 End
               </label>
               <input
+                id='reservation-end'
                 type='time'
                 value={endHHMM}
                 onChange={(e) => setEndHHMM(e.target.value)}
